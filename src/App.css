@@ -145,3 +145,10 @@ button + button {
 .custom-multiselect {
   border: 3px solid black !important;
 }
+
+.error-message {
+  margin-top: 10px;
+  color: red;
+  font-weight: bold;
+  font-size: x-large;
+}

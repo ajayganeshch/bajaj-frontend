@@ -8,6 +8,7 @@ const App = ({ onSubmit }) => {
     signal: "#fab700",
   });
   const [data, setData] = useState("");
+  const [error, setError] = useState(""); // Added state for error message
 
   useEffect(() => {
     const root = document.documentElement;
@@ -20,8 +21,9 @@ const App = ({ onSubmit }) => {
     try {
       const parsedJson = JSON.parse(data);
       onSubmit(parsedJson);
+      setError("");
     } catch (error) {
-      console.error("Invalid JSON", error);
+      setError("Invalid JSON");
     }
   };
 
@@ -35,9 +37,9 @@ const App = ({ onSubmit }) => {
           onChange={(e) => setData(e.target.value)}
         />
       </Card>
+      {error && <div className="error-message">{error}</div>}
       <div className="btn-container">
         <button className="btn" onClick={submitBtn}>
-          {" "}
           Submit
         </button>
       </div>
@@ -56,7 +58,7 @@ const Input = ({ placeholder, value, label, onChange }) => (
       type="text"
       placeholder={placeholder}
       value={value}
-      onChange={onChange} // Ensure this is included
+      onChange={onChange}
     />
     <span className="input__label">{label}</span>
   </label>
