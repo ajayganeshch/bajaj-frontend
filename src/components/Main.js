@@ -2,21 +2,29 @@ import React, { useState } from "react";
 import Input from "./Input";
 import Dropdown from "./Dropdown";
 import Axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
 
 const App = () => {
   const [responseData, setResponseData] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleJsonSubmit = async (data) => {
     console.log(data);
 
     const apiEndpoint = "https://bajaj-api-2f8j.onrender.com/api/bfhl";
+    setLoading(true);
 
-    Axios.post(apiEndpoint, { ...data }).then(async (data) => {
-      console.log(await data.data);
+    try {
+      const response = await Axios.post(apiEndpoint, { ...data });
+      console.log(response.data);
 
-      setResponseData(await data.data);
-    });
+      setResponseData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderResponse = () => {
@@ -49,14 +57,28 @@ const App = () => {
   return (
     <div>
       <Input onSubmit={handleJsonSubmit} />
-      {responseData && (
-        <Dropdown
-          options={["Alphabets", "Numbers", "Highest lowercase alphabet"]}
-          selectedOptions={selectedOptions}
-          onChange={setSelectedOptions}
-        />
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ThreeDots color="#00BFFF" height={80} width={80} />
+        </div>
+      ) : (
+        <>
+          {responseData && (
+            <Dropdown
+              options={["Alphabets", "Numbers", "Highest lowercase alphabet"]}
+              selectedOptions={selectedOptions}
+              onChange={setSelectedOptions}
+            />
+          )}
+          {renderResponse()}
+        </>
       )}
-      {renderResponse()}
     </div>
   );
 };
